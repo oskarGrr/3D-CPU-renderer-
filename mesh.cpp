@@ -120,9 +120,6 @@ void mesh::selectMeshFromObj(const char * fileName)
             //a triangle in the mesh that we are creating with this function
             uint64_t vertexIndecies[3]{};
 
-            //if the obj has no slashes. meaning the file only 
-            //contains the face vertecies and not also the vn and vt data.
-            //example: f 17 2 1
             std::size_t slashPos = currentLine.find('/');
             if(slashPos != std::string::npos)
             {
