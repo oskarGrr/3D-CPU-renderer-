@@ -27,7 +27,7 @@ static float clamp(const float val, const float low, const float high)
         return val;
 }
 
-void Renderer::scaleIntoScreenSpace(triangle& tri, const int sw, const int sh)
+void Renderer::scaleIntoScreenSpace(Triangle& tri, const int sw, const int sh)
 {
     for(int i = 0; i < 3; ++i)
     {      
@@ -39,7 +39,7 @@ void Renderer::scaleIntoScreenSpace(triangle& tri, const int sw, const int sh)
     }
 }
 
-void Renderer::drawWireFrame(const triangle& t, HDC& dc)
+void Renderer::drawWireFrame(const Triangle& t, HDC& dc)
 {
     SetDCPenColor(dc, RGB(0,255,0));
     
@@ -56,7 +56,7 @@ void Renderer::drawWireFrame(const triangle& t, HDC& dc)
     LineTo(dc,  (int)t.verticies[2].x, (int)t.verticies[2].y);
 }
 
-void Renderer::drawTriangle(const triangle& tri, HDC& dc)
+void Renderer::drawTriangle(const Triangle& tri, HDC& dc)
 {
      POINT cords[3] = {{(LONG)tri.verticies[0].x,(LONG)tri.verticies[0].y }, 
                       { (LONG)tri.verticies[1].x,(LONG)tri.verticies[1].y },
@@ -71,21 +71,21 @@ void Renderer::drawTriangle(const triangle& tri, HDC& dc)
 void Renderer::update(const int screenWidth, const int screenHeight, HDC& dc)
 {
     static float angle;   
-    angle += deltaTime * 0.0003f;
+    angle += deltaTime * 0.00045f;
 
     //rotation * translation
     //so translation happens then rotation
     mat4 transform1, transform2;
     transform1 = mat4::matMul(mat4::xRotationMatrix(angle),
-                              mat4::translationMatrix(0.0f, 0.0f, 5.0f));   
+                              mat4::translationMatrix(0.0f, 0.0f, 2.8f));   
     //transform2 = mat4::matMul(transform1, mat4::translationMatrix(0.0f, 0.0f, 6.0f));
 
-    std::vector<triangle> drawTris;
+    std::vector<Triangle> drawTris;
     drawTris.reserve(m.tris.size());
 
-    for(const triangle& t : m.tris)
+    for(const Triangle& t : m.tris)
     {   
-        triangle transformed;          
+        Triangle transformed;          
         
         for(int i=0; i<3; ++i)
             transformed.verticies[i] = mat4::mat4MulByVector4(t.verticies[i], transform1);
@@ -115,7 +115,7 @@ void Renderer::update(const int screenWidth, const int screenHeight, HDC& dc)
         //if the face of the tri is pointing < 90 degrees away from the camera then draw it
         if(dotProduct < 0.0f)
         {
-            triangle projected;
+            Triangle projected;
             vec4 lightDir = {0.0f, 0.0f, -1.0f};
             float lightDp = vec4::dot(norm, lightDir);
             lightDp *= 255;           
@@ -140,7 +140,7 @@ void Renderer::update(const int screenWidth, const int screenHeight, HDC& dc)
     //sort the triangles back to front (painters algorithm)
     //no triangle clipping. so it can look not great in some cases
     std::sort(drawTris.begin(),drawTris.end(),
-    [](triangle& t0, triangle& t1) -> bool
+    [](Triangle& t0, Triangle& t1) -> bool
     {
         float avgZ0 = (t0.verticies[0].z +
                        t0.verticies[1].z +
@@ -154,7 +154,7 @@ void Renderer::update(const int screenWidth, const int screenHeight, HDC& dc)
     });
 
     //send to triangles to winGDI to rasterize
-    for(const triangle& t : drawTris)
+    for(const Triangle& t : drawTris)
     {
         drawTriangle(t, dc);
         //drawWireFrame(triProjected, dc);

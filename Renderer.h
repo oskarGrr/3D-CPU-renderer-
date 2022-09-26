@@ -20,9 +20,9 @@ private:
 private:
     Renderer();
     ~Renderer();
-    static void drawTriangle(const triangle&, HDC&);
-    static void drawWireFrame(const triangle& tri, HDC& dc);
-    static void scaleIntoScreenSpace(triangle&, const int sw, const int sh);
+    static void drawTriangle(const Triangle&, HDC&);
+    static void drawWireFrame(const Triangle& tri, HDC& dc);
+    static void scaleIntoScreenSpace(Triangle&, const int sw, const int sh);
 
 public:
     u64 deltaTime;//time passed since last frame in milliseconds

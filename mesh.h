@@ -2,7 +2,7 @@
 #include <vector>
 #include "vec4.h"
 
-struct triangle
+struct Triangle
 {
     vec4 verticies[3];
     float greyScale = 0.0f;
@@ -11,7 +11,7 @@ struct triangle
 class mesh
 {
 public:
-    std::vector<triangle> tris;
+    std::vector<Triangle> tris;
     void unitCube();
-    bool selectMeshFromObj(const char* fileName);
+    void selectMeshFromObj(const char* fileName);
 };

@@ -1,6 +1,5 @@
 #include "Window.h"    //my window class
 #include "Renderer.h"
-#include <stdexcept>  //std::invalid_argument 
 #include <Windows.h> //win32 api
 #include <wchar.h>
 
@@ -122,7 +121,7 @@ Window::Window(u32 width, u32 height)
         ShowWindow(m_handle, SW_SHOW);
         UpdateWindow(m_handle);
     }
-    else throw std::invalid_argument("unable to successfully create window");  
+    else throw "the window handle was NULL\n";
 }
 
 HBRUSH Window::getBkGroundBrush() const
