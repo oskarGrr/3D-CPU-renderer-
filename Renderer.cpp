@@ -77,7 +77,7 @@ void Renderer::update(const int screenWidth, const int screenHeight, HDC& dc)
     //so translation happens then rotation
     mat4 transform1, transform2;
     transform1 = mat4::matMul(mat4::xRotationMatrix(angle),
-                              mat4::translationMatrix(0.0f, 0.0f, 2.8f));   
+                              mat4::translationMatrix(0.0f, 0.0f, 4.0f));   
     //transform2 = mat4::matMul(transform1, mat4::translationMatrix(0.0f, 0.0f, 6.0f));
 
     std::vector<Triangle> drawTris;
@@ -85,7 +85,7 @@ void Renderer::update(const int screenWidth, const int screenHeight, HDC& dc)
 
     for(const Triangle& t : m.tris)
     {   
-        Triangle transformed;          
+        Triangle transformed{};
         
         for(int i=0; i<3; ++i)
             transformed.verticies[i] = mat4::mat4MulByVector4(t.verticies[i], transform1);

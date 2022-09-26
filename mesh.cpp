@@ -1,19 +1,88 @@
 #include "mesh.h"
 #include "vec4.h"
+#include "Renderer.h"
+#include <iostream>
 #include <cstdint>
 #include <fstream>
 #include <string>
+#include <ctime>
 #include <sstream>
+
+bool mesh::tryToLoadMesh(char const* fileName)
+{
+    auto& renderer = Renderer::get();
+
+    auto const now = std::chrono::system_clock::now();
+    std::time_t const time = std::chrono::system_clock::to_time_t(now);
+    char dataAndTime[256]{};
+    ctime_s(dataAndTime, 256, &time);
+
+    //try to load the mesh
+    mesh m;
+    try//try to load the object file specified
+    {
+        m.selectMeshFromObj(fileName);
+    }
+    catch(std::exception& e)
+    {
+        std::ofstream ofs("errorLog.txt", std::ios_base::app);
+
+        std::cerr << e.what()  
+                  << "execption thrown trying to load "
+                  << fileName << '\n';
+
+        ofs << e.what()
+            << "execption thrown trying to load "
+            << fileName
+            << " at "
+            << dataAndTime << '\n';
+
+        return false;
+    }
+    catch(char const* throwMsg)
+    {
+        std::cerr << throwMsg << "(error logged in errorLog.txt)\n";
+
+        std::ofstream ofs("errorLog.txt", std::ios_base::app);
+        ofs << throwMsg << " at " << dataAndTime << '\n';
+
+        return false;
+    }
+    catch(...)
+    {
+        char const* msg = "an exeption was thrown\n"
+            " (that isnt a const char* throwMessage and also didnt derive from std::exception)\n"
+            " while trying to load ";
+
+        std::cerr << msg << fileName << '\n';
+
+        std::ofstream ofs("errorLog.txt", std::ios_base::app);
+        ofs << msg << fileName << " at " << dataAndTime << '\n';
+
+        return false;
+    }
+
+    renderer.selectMesh(m);
+    return true;
+}
 
 //removes slashes from a face line in an obj file
 //example: f 17/18/1 2/4/12 1/19/15 -> f 17 2 1
 static void removeExtraData(std::string& faceLine, std::size_t slashPos)
 {
+    int i = 0;
     do
     {
         std::size_t nextSpace = faceLine.find(' ', slashPos);//find the space after the slash
         faceLine.erase(slashPos, nextSpace - slashPos);//erase from slash up to the space
         slashPos = faceLine.find('/');//find the next slash
+
+        ++i;
+        if(i > 3)
+        {
+            throw "the faces in the .obj file that the parser tried to load"
+                  " contained more than three verticies. This renderer only supports triangles";
+        }
     }
     while(slashPos != std::string::npos);
 }

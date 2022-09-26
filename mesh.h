@@ -14,4 +14,5 @@ public:
     std::vector<Triangle> tris;
     void unitCube();
     void selectMeshFromObj(const char* fileName);
+    static bool tryToLoadMesh(char const* fileName);
 };

@@ -14,40 +14,8 @@ int WINAPI WinMain(HINSTANCE hi, HINSTANCE hPrevInstance, LPSTR cmdLine, int nCm
     Window window(screenWidth, screenHeight);
     auto& r = Renderer::get();
 
-    mesh m;
-    char const* objFilePath = "3DModels/donut.obj";
-    try//try to load the object file specified
-    {
-        m.selectMeshFromObj(objFilePath);
-    }
-    catch(std::exception& e)
-    {
-        std::ofstream ofs("errorLog.txt");
-        std::cerr << e.what() << "execption thrown trying to load " 
-                  << objFilePath << '\n';
-        ofs << e.what() << "execption thrown trying to load " << objFilePath << '\n';
-        return 1;
-    }
-    catch(char const* throwMsg)
-    {
-        std::ofstream ofs("errorLog.txt");
-        std::cerr << throwMsg << "(error logged in errorLog.txt)\n";
-        ofs << throwMsg << '\n';
-        return 1;
-    }
-    catch(...)
-    {
-         char const* msg = "an exeption was thrown\n" 
-            " (that isnt derived from std::exception or a char const* message)\n"
-            " while trying to load ";
-
-         std::cerr << msg << objFilePath << '\n';
-         std::ofstream ofs("errorLog.txt");
-         ofs << msg << objFilePath << '\n';
-         return 1;
-    }
-
-    r.selectMesh(m);
+    if(!mesh::tryToLoadMesh("3DModels/donut.obj"))
+        return EXIT_FAILURE;
 
     r.setProjection
     (
@@ -69,5 +37,5 @@ int WINAPI WinMain(HINSTANCE hi, HINSTANCE hPrevInstance, LPSTR cmdLine, int nCm
         r.deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
