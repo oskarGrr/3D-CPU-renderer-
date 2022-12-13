@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hi, HINSTANCE hPrevInstance, LPSTR cmdLine, int nCm
     Window window(screenWidth, screenHeight);
     auto& r = Renderer::get();
 
-    if(!mesh::tryToLoadMesh("3DModels/donut.obj"))
+    if(!mesh::tryToLoadMesh("3DModels/d2ut.obj"))
         return EXIT_FAILURE;
 
     r.setProjection

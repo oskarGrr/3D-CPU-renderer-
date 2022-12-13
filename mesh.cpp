@@ -27,15 +27,10 @@ bool mesh::tryToLoadMesh(char const* fileName)
     {
         std::ofstream ofs("errorLog.txt", std::ios_base::app);
 
-        std::cerr << e.what()  
-                  << "execption thrown trying to load "
-                  << fileName << '\n';
+        std::cerr << "execption (of type " << e.what() << ") thrown trying to load " << fileName << '\n';
 
-        ofs << e.what()
-            << "execption thrown trying to load "
-            << fileName
-            << " at "
-            << dataAndTime << '\n';
+        ofs << "execption (of type " << e.what() << ") thrown trying to load " << fileName << '\n'
+            << " at " << dataAndTime << '\n';
 
         return false;
     }
